@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MCAT Physics & Chemistry — Master Reference</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d1117;color:#c9d1d9;font-family:'Segoe UI',-apple-system,system-ui,sans-serif;font-size:14px;line-height:1.6}
+.pg{max-width:920px;margin:0 auto;padding:36px 22px 72px}
+h1{font-size:24px;font-weight:700;color:#e6edf3;letter-spacing:-.5px}
+.sub{font-size:13px;color:#6e7681;margin-top:4px;margin-bottom:40px}
+.sec{margin-bottom:46px}
+.sec-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.sec-lbl{font-size:10px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;white-space:nowrap}
+.sec-ln{flex:1;height:1px;background:#21262d}
+.card{background:#161b22;border:1px solid #21262d;border-radius:10px;overflow:hidden}
+.leg{display:flex;flex-wrap:wrap;gap:5px 14px;padding:10px 16px;border-top:1px solid #21262d}
+.lp{font-size:10px;color:#8b949e;display:flex;align-items:center;gap:5px}
+.ls{width:8px;height:8px;border-radius:2px;display:inline-block;flex-shrink:0}
+
+.bridge{background:#161b22;border:1px solid #21262d;border-left:3px solid #388bfd;border-radius:8px;padding:14px 20px;margin:0 0 44px}
+.bridge h3{font-size:10px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:#388bfd;margin-bottom:10px}
+.brow{display:flex;align-items:baseline;gap:6px;font-size:12px;margin-bottom:8px;color:#8b949e;flex-wrap:wrap;line-height:1.5}
+.brow:last-child{margin-bottom:0}
+.bp{color:#e07b54;font-weight:600;white-space:nowrap}
+.bc{color:#79c0ff;font-weight:600;white-space:nowrap}
+.ba{color:#388bfd;flex-shrink:0;font-weight:700}
+
+.ugrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:10px}
+.uc{background:#161b22;border:1px solid #21262d;border-radius:8px;padding:14px 16px}
+.uh{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:9px;padding-bottom:8px;border-bottom:1px solid #21262d}
+.ur{font-size:12px;color:#8b949e;font-family:'Courier New',monospace;margin-bottom:4px;line-height:1.4}
+.ur:last-child{margin-bottom:0}
+</style>
+</head>
+<body>
+<div class="pg">
+
+<h1>MCAT Physics &amp; Chemistry</h1>
+<p class="sub">Topic dependency map and unit conversion reference — arrows show prerequisite flow</p>
+
+<!-- PHYSICS -->
+<div class="sec">
+  <div class="sec-head">
+    <span class="sec-lbl" style="color:#e07b54">Physics Topics</span>
+    <div class="sec-ln"></div>
+  </div>
+  <div class="card">
+    <svg id="psvg" width="100%" viewBox="0 0 660 450"></svg>
+    <div class="leg" id="pleg"></div>
+  </div>
+</div>
+
+<!-- BRIDGE -->
+<div class="bridge">
+  <h3>&#9651; Physics ↔ Chemistry Bridges</h3>
+  <div class="brow"><span class="bp">Thermodynamics</span><span class="ba">↔</span><span class="bc">Thermochemistry</span><span>Same energy laws — ΔH, ΔG, ΔS; mechanical work W = PΔV appears in both</span></div>
+  <div class="brow"><span class="bp">Atomic &amp; Nuclear</span><span class="ba">↔</span><span class="bc">Atomic Structure</span><span>Electron energy levels, emission/absorption spectra, radioactive decay modes</span></div>
+  <div class="brow"><span class="bp">Electrostatics &amp; Circuits</span><span class="ba">↔</span><span class="bc">Electrochemistry</span><span>Voltage = EMF; Faraday's law relates charge (coulombs) to moles of electrons</span></div>
+  <div class="brow"><span class="bp">Fluid Mechanics</span><span class="ba">↔</span><span class="bc">Ideal Gas Law</span><span>Pressure P = F/A; Dalton's law of partial pressures; Boyle's law is PV = const</span></div>
+  <div class="brow"><span class="bp">Waves &amp; Light</span><span class="ba">↔</span><span class="bc">Spectroscopy &amp; Orbitals</span><span>E = hf links photon energy to wavelength; Beer-Lambert uses light intensity</span></div>
+</div>
+
+<!-- CHEMISTRY -->
+<div class="sec">
+  <div class="sec-head">
+    <span class="sec-lbl" style="color:#79c0ff">Chemistry Topics</span>
+    <div class="sec-ln"></div>
+  </div>
+  <div class="card">
+    <svg id="csvg" width="100%" viewBox="0 0 660 445"></svg>
+    <div class="leg" id="cleg"></div>
+  </div>
+</div>
+
+<!-- UNIT CONVERSIONS -->
+<div class="sec">
+  <div class="sec-head">
+    <span class="sec-lbl" style="color:#a371f7">Unit Conversions</span>
+    <div class="sec-ln"></div>
+  </div>
+  <div class="ugrid" id="ugrid"></div>
+</div>
+
+</div><!-- /pg -->
+
+<script>
+const NS='http://www.w3.org/2000/svg';
+const mk=(t,a={})=>{
+  const e=document.createElementNS(NS,t);
+  Object.entries(a).forEach(([k,v])=>e.setAttribute(k,v));
+  return e;
+};
+
+function addMarker(svg){
+  const defs=mk('defs');
+  const m=mk('marker',{id:svg.id+'-a',viewBox:'0 0 10 10',refX:'9',refY:'5',
+    markerWidth:'5',markerHeight:'5',orient:'auto-start-reverse'});
+  m.appendChild(mk('path',{d:'M2 1L8 5L2 9',fill:'none',stroke:'context-stroke',
+    'stroke-width':'1.5','stroke-linecap':'round','stroke-linejoin':'round'}));
+  defs.appendChild(m);
+  svg.appendChild(defs);
+}
+
+function stdBezier(sx,sy,tx,ty,nh){
+  const y1=sy+nh/2+2, y2=ty-nh/2-2;
+  const dy=y2-y1, dx=tx-sx;
+  const cp=Math.min(dy*0.38,65), lat=dx*0.08;
+  return `M${sx} ${y1} C${sx+lat} ${y1+cp} ${tx-lat} ${y2-cp} ${tx} ${y2}`;
+}
+
+function arcAbove(sx,sy,tx,ty,nw,nh){
+  // same-row: exit right of source, enter top of target, arc upward
+  const ex=sx+nw/2, ey=sy;
+  const ey2=ty-nh/2-2;
+  return `M${ex} ${ey} C${ex+46} ${ey-34} ${tx-46} ${ey2-10} ${tx} ${ey2}`;
+}
+
+function drawGraph(svgId,nodes,edges,cats,nw,nh,legId,legData){
+  const svg=document.getElementById(svgId);
+  addMarker(svg);
+  const nm=Object.fromEntries(nodes.map(n=>[n.id,n]));
+
+  // Draw edges first (behind nodes)
+  edges.forEach(([a,b,sp])=>{
+    const s=nm[a], t=nm[b];
+    const d=(sp==='arc')
+      ? arcAbove(s.cx,s.cy,t.cx,t.cy,nw,nh)
+      : stdBezier(s.cx,s.cy,t.cx,t.cy,nh);
+    svg.appendChild(mk('path',{d,fill:'none',
+      stroke:'rgba(139,148,158,0.26)',
+      'stroke-width':'1.25',
+      'marker-end':`url(#${svgId}-a)`}));
+  });
+
+  // Draw nodes on top
+  nodes.forEach(n=>{
+    const c=cats[n.cat];
+    const g=mk('g');
+    g.appendChild(mk('rect',{
+      x:n.cx-nw/2, y:n.cy-nh/2,
+      width:nw, height:nh, rx:6,
+      fill:c.bg, stroke:c.bd, 'stroke-width':'0.8'
+    }));
+    const t=mk('text',{
+      x:n.cx, y:n.cy,
+      'text-anchor':'middle',
+      'dominant-baseline':'central',
+      'font-size':'11',
+      'font-weight':'600',
+      'font-family':'Segoe UI, system-ui, sans-serif',
+      fill:c.cl
+    });
+    t.textContent=n.l;
+    g.appendChild(t);
+    svg.appendChild(g);
+  });
+
+  // Legend
+  const leg=document.getElementById(legId);
+  legData.forEach(([l,c])=>{
+    const p=document.createElement('div');
+    p.className='lp';
+    p.innerHTML=`<span class="ls" style="background:${c}"></span>${l}`;
+    leg.appendChild(p);
+  });
+}
+
+// ═══════════════════════════════════════════════
+//  PHYSICS GRAPH
+// ═══════════════════════════════════════════════
+//  Layout (NW=120, NH=28, viewBox 660×450):
+//  Row 1 y=52:  Kinematics (330)
+//  Row 2 y=118: Newton's Laws (182), Work & Energy (492)
+//  Row 3 y=188: Momentum(76) Rotational(228) Gravity(388) Electrostatics(548)
+//  Row 4 y=260: Fluid Mech(128) Thermodynamics(338) Circuits(540)
+//  Row 5 y=330: Waves & Sound(192) Magnetism(484)
+//  Row 6 y=398: Light & Optics(268) Atomic & Nuclear(462)
+
+const PNW=120, PNH=28;
+const PC={
+  mech: {cl:'#e07b54',bg:'rgba(224,123,84,.13)',bd:'rgba(224,123,84,.52)'},
+  fluid:{cl:'#2bbbad',bg:'rgba(43,187,173,.13)',bd:'rgba(43,187,173,.52)'},
+  em:   {cl:'#5aabee',bg:'rgba(90,171,238,.13)',bd:'rgba(90,171,238,.52)'},
+  wave: {cl:'#b07edc',bg:'rgba(176,126,220,.13)',bd:'rgba(176,126,220,.52)'},
+  therm:{cl:'#f0a932',bg:'rgba(240,169,50,.13)',bd:'rgba(240,169,50,.52)'},
+  mod:  {cl:'#e83e8c',bg:'rgba(232,62,140,.13)',bd:'rgba(232,62,140,.52)'},
+};
+const PN=[
+  {id:'kin',l:'Kinematics',        cx:330,cy:52,  cat:'mech'},
+  {id:'new',l:"Newton's Laws",     cx:182,cy:118, cat:'mech'},
+  {id:'wke',l:'Work & Energy',     cx:492,cy:118, cat:'mech'},
+  {id:'mom',l:'Momentum',          cx:76, cy:188, cat:'mech'},
+  {id:'rot',l:'Rotational Motion', cx:228,cy:188, cat:'mech'},
+  {id:'gra',l:'Gravity',           cx:388,cy:188, cat:'fluid'},
+  {id:'est',l:'Electrostatics',    cx:548,cy:188, cat:'em'},
+  {id:'flu',l:'Fluid Mechanics',   cx:128,cy:260, cat:'fluid'},
+  {id:'thr',l:'Thermodynamics',    cx:338,cy:260, cat:'therm'},
+  {id:'cir',l:'Circuits',          cx:540,cy:260, cat:'em'},
+  {id:'wav',l:'Waves & Sound',     cx:192,cy:330, cat:'wave'},
+  {id:'mag',l:'Magnetism',         cx:484,cy:330, cat:'em'},
+  {id:'opt',l:'Light & Optics',    cx:268,cy:398, cat:'wave'},
+  {id:'atm',l:'Atomic & Nuclear',  cx:462,cy:398, cat:'mod'},
+];
+const PE=[
+  ['kin','new'],['kin','wke'],
+  ['new','mom'],['new','rot'],['new','gra'],['new','est'],
+  ['wke','rot'],['wke','thr'],
+  ['gra','flu'],
+  ['est','cir'],
+  ['cir','mag'],
+  ['thr','wav'],
+  ['wav','opt'],['mag','opt'],
+  ['opt','atm','arc'],
+];
+drawGraph('psvg',PN,PE,PC,PNW,PNH,'pleg',[
+  ['Mechanics','#e07b54'],
+  ['Fluids & Gravity','#2bbbad'],
+  ['Electromagnetism','#5aabee'],
+  ['Waves & Optics','#b07edc'],
+  ['Thermodynamics','#f0a932'],
+  ['Modern Physics','#e83e8c'],
+]);
+
+// ═══════════════════════════════════════════════
+//  CHEMISTRY GRAPH
+// ═══════════════════════════════════════════════
+//  Layout (NW=128, NH=28, viewBox 660×445):
+//  Row 1 y=48:  Atomic Structure (330)
+//  Row 2 y=118: Periodic Trends (176), Chemical Bonding (492)
+//  Row 3 y=190: Stoichiometry (330)
+//  Row 4 y=260: Ideal Gas Law(126) Acids & Bases(338) Thermochemistry(548)
+//  Row 5 y=328: Kinetics & Equil.(216) Electrochemistry(490)
+//  Row 6 y=398: Organic Chemistry (330)
+
+const CNW=128, CNH=28;
+const CC={
+  struct:{cl:'#4fc3f7',bg:'rgba(79,195,247,.13)',bd:'rgba(79,195,247,.5)'},
+  bond: {cl:'#ba68c8',bg:'rgba(186,104,200,.13)',bd:'rgba(186,104,200,.5)'},
+  react:{cl:'#66bb6a',bg:'rgba(102,187,106,.13)',bd:'rgba(102,187,106,.5)'},
+  gas:  {cl:'#4db6ac',bg:'rgba(77,182,172,.13)',bd:'rgba(77,182,172,.5)'},
+  acid: {cl:'#f08080',bg:'rgba(240,128,128,.13)',bd:'rgba(240,128,128,.5)'},
+  therm:{cl:'#ffc857',bg:'rgba(255,200,87,.13)',bd:'rgba(255,200,87,.5)'},
+  emch: {cl:'#64b5f6',bg:'rgba(100,181,246,.13)',bd:'rgba(100,181,246,.5)'},
+  org:  {cl:'#f48fb1',bg:'rgba(244,143,177,.13)',bd:'rgba(244,143,177,.5)'},
+};
+const CN=[
+  {id:'ats',l:'Atomic Structure',  cx:330,cy:48, cat:'struct'},
+  {id:'per',l:'Periodic Trends',   cx:176,cy:118,cat:'struct'},
+  {id:'bon',l:'Chemical Bonding',  cx:492,cy:118,cat:'bond'},
+  {id:'sto',l:'Stoichiometry',     cx:330,cy:190,cat:'react'},
+  {id:'gas',l:'Ideal Gas Law',     cx:126,cy:260,cat:'gas'},
+  {id:'aci',l:'Acids & Bases',     cx:338,cy:260,cat:'acid'},
+  {id:'tch',l:'Thermochemistry',   cx:548,cy:260,cat:'therm'},
+  {id:'kin',l:'Kinetics & Equil.', cx:216,cy:328,cat:'react'},
+  {id:'elc',l:'Electrochemistry',  cx:490,cy:328,cat:'emch'},
+  {id:'org',l:'Organic Chemistry', cx:330,cy:398,cat:'org'},
+];
+const CE=[
+  ['ats','per'],['ats','bon'],
+  ['per','bon'],
+  ['bon','sto'],
+  ['sto','gas'],['sto','aci'],['sto','tch'],['sto','kin'],
+  ['aci','kin'],['tch','kin'],
+  ['kin','elc','arc'],
+  ['aci','elc'],
+  ['kin','org'],['elc','org'],
+];
+drawGraph('csvg',CN,CE,CC,CNW,CNH,'cleg',[
+  ['Atomic Structure','#4fc3f7'],
+  ['Chemical Bonding','#ba68c8'],
+  ['Stoichiometry / Reactions','#66bb6a'],
+  ['Gas Laws','#4db6ac'],
+  ['Acids & Bases','#f08080'],
+  ['Thermochemistry','#ffc857'],
+  ['Electrochemistry','#64b5f6'],
+  ['Organic Chemistry','#f48fb1'],
+]);
+
+// ═══════════════════════════════════════════════
+//  UNIT CONVERSION CARDS
+// ═══════════════════════════════════════════════
+const UD=[
+  {cat:'Force',col:'#e07b54',rows:[
+    '1 N = 1 kg·m/s²  (the SI Newton)',
+    '1 N = 10⁵ dynes  (CGS system)',
+    'F = ma  →  [kg][m/s²] = N',
+    'Weight W = mg  (g = 9.8 m/s²)',
+    '1 lb-force ≈ 4.448 N',
+  ]},
+  {cat:'Energy & Work',col:'#f0a932',rows:[
+    '1 J = 1 N·m = 1 kg·m²/s²',
+    '1 cal = 4.184 J',
+    '1 kcal = 4184 J  (food Calorie = Cal)',
+    '1 eV = 1.602 × 10⁻¹⁹ J',
+    '1 L·atm = 101.3 J  (gas work)',
+  ]},
+  {cat:'Pressure',col:'#2bbbad',rows:[
+    '1 atm = 101,325 Pa = 101.3 kPa',
+    '1 atm = 760 mmHg = 760 torr',
+    '1 Pa = 1 N/m²  (SI unit)',
+    '1 bar = 10⁵ Pa ≈ 0.987 atm',
+    'PV = nRT → P(atm)·V(L) = n·R·T',
+  ]},
+  {cat:'Volume',col:'#66bb6a',rows:[
+    '1 L = 1000 mL = 1000 cm³',
+    '1 mL = 1 cm³ = 1 cc',
+    '1 m³ = 1000 L',
+    '1 dL = 100 mL  (blood test units)',
+    '22.4 L = 1 mol ideal gas at STP',
+  ]},
+  {cat:'Temperature',col:'#f08080',rows:[
+    'K = °C + 273.15  ← use this!',
+    '°C = (°F − 32) × 5/9',
+    '°F = °C × (9/5) + 32',
+    'STP:  0°C = 273 K,  1 atm',
+    'SATP: 25°C = 298 K,  1 bar',
+  ]},
+  {cat:'Mass & Amount',col:'#b07edc',rows:[
+    '1 kg = 1000 g  |  1 g = 1000 mg',
+    '1 u (amu) = 1.661 × 10⁻²⁷ kg',
+    '1 mol = 6.022 × 10²³ entities',
+    'n = m / M  (moles = g ÷ g/mol)',
+    '1 mol ideal gas at STP = 22.4 L',
+  ]},
+  {cat:'Distance',col:'#5aabee',rows:[
+    '1 m = 100 cm = 1000 mm',
+    '1 nm = 10⁻⁹ m  (proteins, DNA)',
+    '1 μm = 10⁻⁶ m  (cell size range)',
+    '1 Å  = 10⁻¹⁰ m  (bond lengths)',
+    'Visible: 400 nm (violet)–700 nm (red)',
+  ]},
+  {cat:'Power & Electricity',col:'#4fc3f7',rows:[
+    '1 W = 1 J/s  |  P = IV',
+    '1 V = 1 J/C  (potential difference)',
+    '1 A = 1 C/s  (current)',
+    '1 Ω = 1 V/A  (resistance)',
+    '1 F = 1 C/V  (capacitance)',
+  ]},
+  {cat:'Waves & Electromagnetic',col:'#e83e8c',rows:[
+    'c = λf = 3.00 × 10⁸ m/s  (in vacuum)',
+    'E = hf  (h = 6.626 × 10⁻³⁴ J·s)',
+    'E = hc/λ  (energy from wavelength)',
+    '1 Hz = 1 s⁻¹ = 1 cycle per second',
+    'n = c/v  (index of refraction)',
+  ]},
+  {cat:'Concentration',col:'#f48fb1',rows:[
+    'M = mol/L  (molarity)',
+    'm = mol/kg solvent  (molality)',
+    'N = equivalents/L  (normality)',
+    'pH = −log[H⁺]  |  pOH = −log[OH⁻]',
+    'pH + pOH = 14.00  at 25°C',
+  ]},
+  {cat:'Newtons → Joules (via distance)',col:'#ffc857',rows:[
+    'J = N × m  (force × displacement)',
+    '1 N applied over 1 m = 1 J of work',
+    'Power: W = J/s = N·m/s',
+    'Pressure: Pa = N/m² = J/m³',
+    'Torque: N·m ≠ J (no energy transfer)',
+  ]},
+  {cat:'mL ↔ cm³ & Common Equalities',col:'#ba68c8',rows:[
+    '1 mL = 1 cm³  (exact, by definition)',
+    'N·m = J  |  Pa·m³ = J',
+    'A·Ω = V  |  V/Ω = A  (Ohm)',
+    'C/s = A  |  A·s = C  (charge)',
+    'kg·m/s = N·s  (impulse-momentum)',
+  ]},
+];
+
+const grid=document.getElementById('ugrid');
+UD.forEach(u=>{
+  const card=document.createElement('div');
+  card.className='uc';
+  card.style.borderTop=`2px solid ${u.col}`;
+  const h=document.createElement('div');
+  h.className='uh'; h.style.color=u.col; h.textContent=u.cat;
+  card.appendChild(h);
+  u.rows.forEach(r=>{
+    const d=document.createElement('div');
+    d.className='ur'; d.textContent=r; card.appendChild(d);
+  });
+  grid.appendChild(card);
+});
+</script>
+</body>
+</html>
